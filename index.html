@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificar E-mail</title>
+</head>
+<body>
+    <h1>Classificar E-mail</h1>
+    <textarea id="corpoEmail" rows="5" cols="40" placeholder="Digite o corpo do e-mail aqui..."></textarea>
+    <br><br>
+    <button onclick="classificarEmail()">Classificar</button>
+    <p id="resultado"></p>
+
+    <script>
+        async function classificarEmail() {
+            const corpoEmail = document.getElementById('corpoEmail').value;
+
+            // Enviar a solicitação para a API
+            const response = await fetch('http://127.0.0.1:5000/classificar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ corpo_email: corpoEmail }),
+            });
+
+            const data = await response.json();
+            document.getElementById('resultado').innerText = `Resultado: ${data.resultado}`;
+        }
+    </script>
+</body>
+</html>

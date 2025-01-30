@@ -3,8 +3,11 @@ import joblib
 import pandas as pd
 
 # Carregar o modelo e o vetorizador salvos
-tfidf = joblib.load('tfidf_vectorizer.joblib')
-nb_model = joblib.load('naive_bayes_model.joblib')
+tfidf_file = './tfidf_vectorizer.joblib'
+tfidf = joblib.load(tfidf_file)
+
+nb_file = './naive_bayes_model.joblib'
+nb_model = joblib.load(nb_file)
 
 # Criar a aplicação Flask
 app = Flask(__name__)

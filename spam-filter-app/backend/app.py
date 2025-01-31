@@ -24,6 +24,8 @@ def get_emails():
     print(emails[0])
     return jsonify(emails)
 
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 

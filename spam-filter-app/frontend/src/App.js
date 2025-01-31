@@ -5,37 +5,87 @@ import './App.css';
 function App() {
   const [emails, setEmails] = useState([]);
 
+  // Carrega os e-mails ao iniciar
   useEffect(() => {
-    // Fetch emails from the backend
     axios.get('http://127.0.0.1:5000/emails')
       .then(response => {
         setEmails(response.data);
       })
       .catch(error => {
-        console.error('There was an error fetching the emails!', error);
+        console.error("Erro ao carregar e-mails:", error);
       });
-      console.log("email", emails);
   }, []);
+
+  // Função para verificar se um e-mail é spam
+  const handleCheckSpam = async (emailId, emailText, actualLabel) => {
+    try {
+      const response = await axios.post('http://127.0.0.1:5000/classificar', {
+        corpo_email: emailText, // Corrigido para enviar o texto do e-mail
+      });
+      const isSpam = response.data.resultado; // Corrigido para acessar o campo correto
+      console.log("label" , actualLabel);
+      console.log("isSpam" , isSpam);
+      // Verifica se a previsão foi correta
+      const isCorrect = (isSpam && actualLabel === "spam") || (!isSpam && actualLabel === "ham");
+
+      // Atualiza apenas o e-mail específico
+      setEmails(prevEmails =>
+        prevEmails.map(email =>
+          email.id === emailId
+            ? { ...email, is_spam: isSpam, is_correct: isCorrect, prediction: isSpam ? 'Spam' : 'Não é Spam' }
+            : email
+        )
+      );
+    } catch (error) {
+      console.error("Erro ao verificar spam:", error);
+    }
+  };
 
   return (
     <div className="App">
-      <h1>Spam Detector</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Label</th>
-            <th>Text</th>
-          </tr>
-        </thead>
-        <tbody>
-          {emails.map((email, index) => (
-            <tr key={index} className={email.label === 'spam' ? 'spam' : 'ham'}>
-              <td>{email.label}</td>
-              <td>{email.text}</td>
+      <header className="header">
+        <h1>Detector de Spam</h1>
+      </header>
+      <div className="content">
+        <table>
+          <thead>
+            <tr>
+              <th>Spam</th>
+              <th>E-mail</th>
+              <th>Ação</th>
+              <th>Previsão</th>
+              <th>Acerto</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {emails.map(email => (
+              <tr key={email.id}>
+                <td>{email.label}</td>
+                <td>{email.text}</td>
+                <td>
+                  <button onClick={() => handleCheckSpam(email.id, email.text, email.label)}>
+                    Verificar Spam
+                  </button>
+                </td>
+                <td>
+                  {email.prediction && (
+                    <span className={email.prediction === 'Spam' ? 'spam' : 'ham'}>
+                      {email.prediction}
+                    </span>
+                  )}
+                </td>
+                <td>
+                  {email.is_correct !== undefined && (
+                    <span className={email.is_correct ? 'correct' : 'incorrect'}>
+                      {email.is_correct ? '✔️ Correto' : '❌ Errado'}
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

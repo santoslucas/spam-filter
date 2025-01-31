@@ -1,14 +1,15 @@
-# Importação das bibliotecas necessárias
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, classification_report, confusion_matrix, roc_curve
 import requests
 from io import BytesIO
 from zipfile import ZipFile
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # 1. Coleta de Dados
 # Baixando o dataset SMS Spam Collection
@@ -78,4 +79,35 @@ print("Acurácia média com validação cruzada (5 folds):", scores_nb.mean())
 # Usando validação cruzada com 5 folds para o modelo SVM
 scores_svm = cross_val_score(svm_model, X, df['label'], cv=5, scoring='accuracy')
 print("\nValidação Cruzada (SVM):")
-vx
+
+# 6. Visualizações
+# Função para plotar a matriz de confusão
+def plot_confusion_matrix(y_true, y_pred, title):
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(6, 6))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', cbar=False,
+                xticklabels=['Ham', 'Spam'], yticklabels=['Ham', 'Spam'])
+    plt.title(title)
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.show()
+
+# Função para plotar a curva ROC
+def plot_roc_curve(y_true, y_pred_proba, title):
+    fpr, tpr, thresholds = roc_curve(y_true, y_pred_proba)
+    plt.figure(figsize=(6, 6))
+    plt.plot(fpr, tpr, label='ROC Curve')
+    plt.plot([0, 1], [0, 1], 'k--', label='Random Guess')
+    plt.title(title)
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.legend()
+    plt.show()
+
+# Plotando a matriz de confusão e a curva ROC para o modelo Naive Bayes
+plot_confusion_matrix(y_test, y_pred_nb, "Matriz de Confusão - Naive Bayes")
+plot_roc_curve(y_test, nb_model.predict_proba(X_test)[:, 1], "Curva ROC - Naive Bayes")
+
+# Plotando a matriz de confusão e a curva ROC para o modelo SVM
+plot_confusion_matrix(y_test, y_pred_svm, "Matriz de Confusão - SVM")
+plot_roc_curve(y_test, svm_model.predict_proba(X_test)[:, 1], "Curva ROC - SVM")

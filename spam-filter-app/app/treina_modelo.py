@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.svm import SVC  # Importando o SVM
 import requests
 from io import BytesIO
 from zipfile import ZipFile
-import joblib  # Biblioteca para salvar/carregar modelos
+import joblib
+from sklearn.model_selection import train_test_split
 
-# Função para carregar e preparar o modelo
 def carregar_e_salvar_modelo():
     # Baixando o dataset SMS Spam Collection
     url = "https://archive.ics.uci.edu/ml/machine-learning-databases/00228/smsspamcollection.zip"
@@ -25,17 +25,21 @@ def carregar_e_salvar_modelo():
     df['text'] = df['text'].str.replace(r'[^\w\s]', '', regex=True)
     df['text'] = df['text'].str.lower()
 
-    # Tokenização e remoção de stopwords
+    # Dividindo o dataset em treino (70%) e teste (30%)
+    df_train, df_test = train_test_split(df, test_size=0.3, random_state=42)
+
+    # Tokenização e remoção de stopwords (apenas nos dados de treino)
     tfidf = TfidfVectorizer(stop_words='english')
-    X = tfidf.fit_transform(df['text'])
+    X_train = tfidf.fit_transform(df_train['text'])
 
-    # Treinamento do modelo Naive Bayes
-    nb_model = MultinomialNB()
-    nb_model.fit(X, df['label'])
+    # Treinamento do modelo SVM
+    svm_model = SVC(kernel='linear', probability=True, random_state=42)  # Usando kernel linear
+    svm_model.fit(X_train, df_train['label'])
 
-    # Salvar o modelo e o vetorizador em arquivos
+    # Salvar o modelo, o vetorizador e os dados de teste
     joblib.dump(tfidf, 'tfidf_vectorizer.joblib')
-    joblib.dump(nb_model, 'naive_bayes_model.joblib')
+    joblib.dump(svm_model, 'svm_model.joblib')  # Salvando o modelo SVM
+    df_test.to_csv('dados_teste.csv', index=False)  # Salvar dados de teste em um arquivo CSV
 
-# Executar a função para salvar o modelo e o vetorizador
+# Executar a função para salvar o modelo e os dados de teste
 carregar_e_salvar_modelo()

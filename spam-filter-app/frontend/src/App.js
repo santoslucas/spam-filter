@@ -26,7 +26,7 @@ function App() {
       console.log("label" , actualLabel);
       console.log("isSpam" , isSpam);
       // Verifica se a previsão foi correta
-      const isCorrect = (isSpam && actualLabel === "spam") || (!isSpam && actualLabel === "ham");
+      const isCorrect = (isSpam && actualLabel === 1) || (!isSpam && actualLabel === 0);
 
       // Atualiza apenas o e-mail específico
       setEmails(prevEmails =>
@@ -60,7 +60,7 @@ function App() {
           <tbody>
             {emails.map(email => (
               <tr key={email.id}>
-                <td>{email.label}</td>
+                <td>{email.id}</td>
                 <td>{email.text}</td>
                 <td>
                   <button onClick={() => handleCheckSpam(email.id, email.text, email.label)}>

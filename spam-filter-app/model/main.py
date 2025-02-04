@@ -39,7 +39,7 @@ X = tfidf.fit_transform(df['text'])
 
 # 3. Treinamento do Modelo
 # Dividindo os dados em conjuntos de treino e teste
-X_train, X_test, y_train, y_test = train_test_split(X, df['label'], test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, df['label'], test_size=0.3, random_state=42)
 
 # Modelo Naive Bayes
 nb_model = MultinomialNB()

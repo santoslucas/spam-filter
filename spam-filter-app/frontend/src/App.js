@@ -5,7 +5,6 @@ import './App.css';
 function App() {
   const [emails, setEmails] = useState([]);
 
-  // Carrega os e-mails ao iniciar
   useEffect(() => {
     axios.get('http://127.0.0.1:5000/emails')
       .then(response => {
@@ -16,19 +15,17 @@ function App() {
       });
   }, []);
 
-  // Função para verificar se um e-mail é spam
   const handleCheckSpam = async (emailId, emailText, actualLabel) => {
     try {
       const response = await axios.post('http://127.0.0.1:5000/classificar', {
-        corpo_email: emailText, // Corrigido para enviar o texto do e-mail
+        corpo_email: emailText, 
       });
-      const isSpam = response.data.resultado; // Corrigido para acessar o campo correto
+      const isSpam = response.data.resultado; 
       console.log("label" , actualLabel);
       console.log("isSpam" , isSpam);
-      // Verifica se a previsão foi correta
+      
       const isCorrect = (isSpam && actualLabel === 1) || (!isSpam && actualLabel === 0);
 
-      // Atualiza apenas o e-mail específico
       setEmails(prevEmails =>
         prevEmails.map(email =>
           email.id === emailId

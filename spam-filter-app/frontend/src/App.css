@@ -13,14 +13,14 @@ body {
 
 /* Header */
 .header {
-  background-color: #010649; /* Roxo moderno */
+  background-color: #010649;
   color: white;
   padding: 20px 0;
-  width: 100%; /* Ocupa toda a largura */
-  position: fixed; /* Fixo no topo */
+  width: 100%;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 1000; /* Garante que fique acima de outros elementos */
+  z-index: 1000;
 }
 
 .header h1 {
@@ -29,9 +29,8 @@ body {
   font-weight: bold;
 }
 
-/* Espaçamento para o conteúdo abaixo do header */
 .content {
-  margin-top: 80px; /* Ajuste conforme a altura do header */
+  margin-top: 80px;
 }
 
 /* Tabela de e-mails */
@@ -78,7 +77,7 @@ button {
 }
 
 button:hover {
-  background-color: #ffffff; /* Roxo mais escuro ao passar o mouse */
+  background-color: #ffffff;
   border-width: 1px;
   border-color: #ffb30e;
   color: #ffb30e;
@@ -86,23 +85,23 @@ button:hover {
 
 /* Resultado de spam */
 .spam {
-  color: #d32f2f; /* Vermelho para spam */
+  color: #d32f2f;
   font-weight: bold;
 }
 
 .ham {
-  color: #388e3c; /* Verde para não spam */
+  color: #388e3c;
   font-weight: bold;
 }
 
 /* Coluna de acerto */
 .correct {
-  color: #388e3c; /* Verde para acerto */
+  color: #388e3c;
   font-weight: bold;
 }
 
 .incorrect {
-  color: #d32f2f; /* Vermelho para erro */
+  color: #d32f2f;
   font-weight: bold;
 }
 
